@@ -1,0 +1,36 @@
+all:
+  children:
+    local:
+    webservers:
+
+local:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_user: vlad
+webservers:
+  vars:
+    ansible_connection: ssh
+  hosts:
+    server_01:
+      ansible_host: 158.160.171.193
+      ansible_user: ansible_user
+#      ansible_ssh_pass: 12345
+      # ansible_become_password: 12345
+      ansible_ssh_common_args: -o PreferredAuthentications=publickey
+      ansible_ssh_private_key_file: /home/vlad/Projects/hexlet-terraform/.ssh/ansible_user_id_rsa
+ #     ansible_ssh_common_args: '-o ProxyCommand="ssh -o StrictHostKeyChecking=accept-new -W %h:%p -q ansible_user@server_01"'
+  #    ansible_ssh_common_args: '-o PreferredAuthentications=password -o ServerAliveInterval=30 -o ServerAliveCountMax=10'
+  #    ansible_ssh_common_args: '-o PreferredAuthentications=password'
+vm:
+  vars:
+    ansible_connection: ssh
+    ansible_user: ssh-user
+    ansible_ssh_pass: 12345
+    ansible_become_password: 12345
+  hosts:
+    vp_pc2:
+      ansible_host: 192.168.0.21
+
+
+      

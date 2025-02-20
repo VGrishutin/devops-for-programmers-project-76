@@ -1,0 +1,115 @@
+#- hosts: vm
+- hosts: webservers
+  gather_facts: true
+  pre_tasks:
+    # - name: update and upgrade all
+    #   ansible.builtin.apt:
+    #     upgrade: yes
+    #     update_cache: yes
+    #   become: true
+
+  roles:
+    # - role: geerlingguy.pip
+    #   vars:
+    #     pip_install_packages:
+    #       - name: docker
+    #   become: true
+    # - role: geerlingguy.docker      
+#      become: true
+
+  tasks:
+    - name: Ping
+      ansible.builtin.ping:
+
+    - name: upgrade all
+      ansible.builtin.apt:
+        upgrade: yes
+      become: true
+
+    - name: update all
+      ansible.builtin.apt:
+        update_cache: yes
+      become: true
+
+    - name: geerlingguy.pip
+      import_role: 
+        name: geerlingguy.pip
+      vars:
+        pip_install_packages:
+          - name: docker
+      become: true
+
+    - name: geerlingguy.docker      
+      import_role: 
+        name: geerlingguy.docker      
+      become: true
+
+    - name: create redme data dir
+      ansible.builtin.file:
+        path: "/usr/src/redmine/files"
+        state: directory
+        owner: root
+        group: root
+        mode: '1777'        
+      become: true      
+
+    - name: Ensure docker is in a running state
+      ansible.builtin.service:
+        name: docker 
+        state: started
+      register: dockerDetails
+      until: dockerDetails.status.ActiveState == "active"
+      retries: 15
+      delay: 20
+      become: true 
+
+    - name: Create a network
+      community.docker.docker_network:
+        name: redme-net
+      become: true
+
+    - name: Create a data container
+      community.docker.docker_container:
+        name: postgres-db
+        image: postgres:15.10
+        state: started
+        recreate: true
+        restart_policy: always
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: redmine-db
+          POSTGRES_USER: redmine-user
+          POSTGRES_PASSWORD: password
+          REDMINE_SECRET_KEY_BASE: "supersecretkey"
+        networks:
+          - name: redme-net
+            aliases:
+              - db
+      become: true
+
+
+    - name: Create a redme container
+      community.docker.docker_container:
+        name: app
+        image: redmine:5.1.6-alpine3.21
+        state: started
+#        recreate: true
+        restart_policy: always
+        links:
+          - "postgres-db:db"        
+        ports:
+          - 8080:3000
+        volumes:
+          - /usr/src/redmine/files:/usr/src/redmine/files
+        env: # Настраиваем
+          REDMINE_DB_POSTGRES: postgres-db
+          REDMINE_DB_PORT: "5432"
+          REDMINE_DB_USERNAME: redmine-user
+          REDMINE_DB_PASSWORD: password
+          REDMINE_DB_DATABASE: redmine-db
+          REDMINE_SECRET_KEY_BASE: "supersecretkey"
+
+        networks:
+          - name: redme-net
+      become: true
