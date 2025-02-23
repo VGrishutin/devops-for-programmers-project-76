@@ -2,20 +2,20 @@
 - hosts: webservers
   gather_facts: true
   pre_tasks:
-    # - name: update and upgrade all
-    #   ansible.builtin.apt:
-    #     upgrade: yes
-    #     update_cache: yes
-    #   become: true
+    - name: update and upgrade all
+      ansible.builtin.apt:
+        upgrade: yes
+        update_cache: yes
+      become: true
 
   roles:
-    # - role: geerlingguy.pip
-    #   vars:
-    #     pip_install_packages:
-    #       - name: docker
-    #   become: true
-    # - role: geerlingguy.docker      
-#      become: true
+    - role: geerlingguy.pip
+      vars:
+        pip_install_packages:
+          - name: docker
+      become: true
+    - role: geerlingguy.docker      
+      become: true
 
   tasks:
     - name: Ping
