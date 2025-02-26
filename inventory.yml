@@ -1,6 +1,5 @@
 all:
   children:
-    local:
     webservers:
 
 local:
