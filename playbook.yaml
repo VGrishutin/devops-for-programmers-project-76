@@ -1,13 +1,15 @@
 #- hosts: vm
-- hosts: webservers
+- hosts: all
   gather_facts: true
   pre_tasks:
+    - name: Ping
+      ansible.builtin.ping:
     - name: update and upgrade all
       ansible.builtin.apt:
         upgrade: yes
         update_cache: yes
       become: true
-
+      ignore_errors: yes
   roles:
     - role: geerlingguy.pip
       vars:
@@ -18,40 +20,62 @@
       become: true
 
   tasks:
-    - name: Ping
-      ansible.builtin.ping:
+    # - name: update and upgrade all
+    #   ansible.builtin.apt:
+    #     upgrade: yes
+    #     update_cache: yes
+    #   become: true
+    #   ignore_errors: yes
 
-    - name: upgrade all
-      ansible.builtin.apt:
-        upgrade: yes
+    # - name: geerlingguy.pip
+    #   import_role: 
+    #     name: geerlingguy.pip
+    #   vars:
+    #     pip_install_packages:
+    #       - name: docker
+    #   become: true
+
+    # - name: geerlingguy.docker      
+    #   import_role: 
+    #     name: geerlingguy.docker      
+    #   become: true
+
+    - name: Get running containers
+      community.docker.docker_host_info:
+        containers: yes
+      register: docker_info
       become: true
 
-    - name: update all
-      ansible.builtin.apt:
-        update_cache: yes
+    - name: Stop running containers
+      community.docker.docker_container:
+        name: "{{ item }}"
+        state: stopped
+      loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
       become: true
 
-    - name: geerlingguy.pip
-      import_role: 
-        name: geerlingguy.pip
-      vars:
-        pip_install_packages:
-          - name: docker
-      become: true
-
-    - name: geerlingguy.docker      
-      import_role: 
-        name: geerlingguy.docker      
+    - name: Delete existing dist folder
+      file:
+        path: /usr/src/redmine/files
+        state: absent
       become: true
 
     - name: create redme data dir
       ansible.builtin.file:
-        path: "/usr/src/redmine/files"
+        path: /usr/src/redmine/files
         state: directory
-        owner: root
-        group: root
-        mode: '1777'        
-      become: true      
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        mode: '777'        
+      become: true
+
+    - name: upload env file for redmine
+      ansible.builtin.template:
+        src: templates/redmine.env.j2
+        dest: /usr/src/redmine/files/redmine.env
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        mode: '777'        
+
 
     - name: Ensure docker is in a running state
       ansible.builtin.service:
@@ -68,25 +92,24 @@
         name: redme-net
       become: true
 
-    - name: Create a data container
-      community.docker.docker_container:
-        name: postgres-db
-        image: postgres:15.10
-        state: started
-        recreate: true
-        restart_policy: always
-        ports:
-          - "5432:5432"
-        env:
-          POSTGRES_DB: redmine-db
-          POSTGRES_USER: redmine-user
-          POSTGRES_PASSWORD: password
-          REDMINE_SECRET_KEY_BASE: "supersecretkey"
-        networks:
-          - name: redme-net
-            aliases:
-              - db
-      become: true
+    # - name: Create a data container
+    #   community.docker.docker_container:
+    #     name: postgres-db
+    #     image: postgres:15.10
+    #     state: started
+    #     recreate: true
+    #     restart_policy: always
+    #     ports:
+    #       - "5432:5432"
+    #     env:
+    #       POSTGRES_DB: redmine-db
+    #       POSTGRES_USER: redmine-user
+    #       POSTGRES_PASSWORD: password
+    #     networks:
+    #       - name: redme-net
+    #         aliases:
+    #           - db
+    #   become: true
 
 
     - name: Create a redme container
@@ -99,16 +122,19 @@
         links:
           - "postgres-db:db"        
         ports:
-          - 8080:3000
+          - 80:3000
         volumes:
           - /usr/src/redmine/files:/usr/src/redmine/files
-        env: # Настраиваем
-          REDMINE_DB_POSTGRES: postgres-db
-          REDMINE_DB_PORT: "5432"
-          REDMINE_DB_USERNAME: redmine-user
-          REDMINE_DB_PASSWORD: password
-          REDMINE_DB_DATABASE: redmine-db
-          REDMINE_SECRET_KEY_BASE: "supersecretkey"
+        env_file: /usr/src/redmine/files/redmine.env
+        # - path: /usr/src/redmine/files/redmine.env
+        #   required: true # default        
+        # env: # Настраиваем
+        #   REDMINE_DB_POSTGRES: postgres-db
+        #   REDMINE_DB_PORT: "5432"
+        #   REDMINE_DB_USERNAME: redmine-user
+        #   REDMINE_DB_PASSWORD: password
+        #   REDMINE_DB_DATABASE: redmine-db
+        #   REDMINE_SECRET_KEY_BASE: "supersecretkey"
 
         networks:
           - name: redme-net

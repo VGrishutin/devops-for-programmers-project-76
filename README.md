@@ -6,7 +6,21 @@
 ## Список используемого ПО
 Перед развернтыванием необходимо установить 
 - Ansible
-## Указать значения переменных
+## Переменные окружения
+Для развертывания необходимо указать значения следующих переменныхЖ
+Переменные отвечающие за подключение к вирутальным машинам через ssh
+ansible_user: ansible_user
+ansible_ssh_pass: 12345678
+
+Переменные отвечающие за подключение Redmine к серверу БД
+REDMINE_DB_POSTGRES: postgres-db
+REDMINE_DB_PORT: "5432"
+REDMINE_DB_USERNAME: redmine-user
+REDMINE_DB_PASSWORD: password
+REDMINE_DB_DATABASE: redmine-db
+
+Уникальное случайное значение
+REDMINE_SECRET_KEY_BASE: "supersecretkey"
 
 # Развертывание
 Для развертывания необходимо выполнить следующую команду
