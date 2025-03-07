@@ -15,10 +15,22 @@
         pip_install_packages:
           - name: docker
       become: true
-    # - role: geerlingguy.docker
-    #   become: true
-    # - role: DataDog.datadog
-    #   become: true  
+    - role: geerlingguy.docker
+      become: true
+    - role: DataDog.datadog
+      vars:
+        app_port: "3000"
+        datadog_api_key: "{{DATADOG_API_KEY}}"
+        datadog_site: "{{DATADOG_SITE}}"
+        datadog_checks:
+          http_check:
+            init_config:
+            instances:
+              - name: Application health check status
+                url: "http://localhost:{{ app_port }}"
+                timeout: 5
+                method: GET      
+      become: true  
       # when: 
       #   - inventory_hostname in groups["webservers"]
 
