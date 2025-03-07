@@ -1,3 +1,0 @@
-ansible_connection: ssh
-ansible_user: vlad
-ansible_ssh_pass: 12345678
