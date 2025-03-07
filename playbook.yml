@@ -15,8 +15,8 @@
         pip_install_packages:
           - name: docker
       become: true
-    - role: geerlingguy.docker
-      become: true
+    # - role: geerlingguy.docker
+    #   become: true
     - role: DataDog.datadog
       vars:
         app_port: "3000"
