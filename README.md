@@ -17,25 +17,29 @@
 Для развертывания необходимо указать значения следующих переменныхЖ
 Переменные отвечающие за подключение к вирутальным машинам через ssh
 ansible_user: ansible_user
-ansible_ssh_pass: 12345678
+ansible_ssh_pass: ***
 
 Переменные отвечающие за подключение Redmine к серверу БД
 - REDMINE_DB_POSTGRES: postgres-db
 - REDMINE_DB_PORT: "5432"
 - REDMINE_DB_USERNAME: redmine-user
-- REDMINE_DB_PASSWORD: password
+- REDMINE_DB_PASSWORD: ***
 - REDMINE_DB_DATABASE: redmine-db
 
 Уникальное случайное значение
 - REDMINE_SECRET_KEY_BASE: "supersecretkey"
 
 ### Часть переменных хранится в секретах
-- ssh пороль к виртуальной машине: ansible_ssh_pass: 12345678
-- ssh пароль к NAT серверу: NAT_SSH_PASSWORD
-- пороль к БД Redmine REDMINE_DB_PASSWORD: password
-- api key для DataDog: DATADOG_API_KEY: 968cc14cf404634125185e4c41a8d762
-
+- ssh пороль к виртуальной машине: ansible_ssh_pass: ***
+- ssh пароль к NAT серверу: NAT_SSH_PASSWORD: ***
+- пороль к БД Redmine REDMINE_DB_PASSWORD: ***
+- api key для DataDog: DATADOG_API_KEY: ***
 # Развертывание
+Установка зависимостей
+```
+make prepare
+```
+
 Для развертывания необходимо выполнить следующую команду
 ```
 make deploy
