@@ -8,7 +8,9 @@
 - Ansible
 - Дополнительные роли
     geerlingguy.pip
-    geerlingguy.docker    
+    geerlingguy.docker
+- Дополнительные коллекции
+    community.docker
 
 ## Переменные окружения
 Для развертывания необходимо указать значения следующих переменныхЖ
