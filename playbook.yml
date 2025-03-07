@@ -60,15 +60,15 @@
         mode: '777'        
 
 
-    - name: Ensure docker is in a running state
-      ansible.builtin.service:
-        name: docker 
-        state: started
-      register: dockerDetails
-      until: dockerDetails.status.ActiveState == "active"
-      retries: 15
-      delay: 20
-      become: true 
+    # - name: Ensure docker is in a running state
+    #   ansible.builtin.service:
+    #     name: docker 
+    #     state: started
+    #   register: dockerDetails
+    #   until: dockerDetails.status.ActiveState == "active"
+    #   retries: 15
+    #   delay: 20
+    #   become: true 
 
     - name: Create a redmine container
       community.docker.docker_container:
