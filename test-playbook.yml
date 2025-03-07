@@ -1,5 +1,10 @@
 - hosts: all
   gather_facts: true
+  roles:
+    - role: DataDog.datadog
+      become: true  
+      when: 
+        - inventory_hostname in groups["webservers"]
   pre_tasks:
     - name: Ping
       ansible.builtin.ping:

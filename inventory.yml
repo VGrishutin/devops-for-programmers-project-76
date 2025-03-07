@@ -2,5 +2,8 @@ webservers:
   hosts:
     192.168.2.10:
     192.168.2.11:
+webservers1:
+  hosts:
+    192.168.2.12:
 
 

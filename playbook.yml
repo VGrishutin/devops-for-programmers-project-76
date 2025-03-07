@@ -16,30 +16,14 @@
         pip_install_packages:
           - name: docker
       become: true
-    - role: geerlingguy.docker      
+    - role: geerlingguy.docker
       become: true
+    - role: DataDog.datadog
+      become: true  
+      when: 
+        - inventory_hostname in groups["webservers"]
 
   tasks:
-    # - name: update and upgrade all
-    #   ansible.builtin.apt:
-    #     upgrade: yes
-    #     update_cache: yes
-    #   become: true
-    #   ignore_errors: yes
-
-    # - name: geerlingguy.pip
-    #   import_role: 
-    #     name: geerlingguy.pip
-    #   vars:
-    #     pip_install_packages:
-    #       - name: docker
-    #   become: true
-
-    # - name: geerlingguy.docker      
-    #   import_role: 
-    #     name: geerlingguy.docker      
-    #   become: true
-
     - name: Get running containers
       community.docker.docker_host_info:
         containers: yes

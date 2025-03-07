@@ -9,6 +9,7 @@
 - Дополнительные роли
     geerlingguy.pip
     geerlingguy.docker
+    DataDog.datadog
 - Дополнительные коллекции
     community.docker
 
@@ -32,11 +33,12 @@ REDMINE_SECRET_KEY_BASE: "supersecretkey"
 - ssh пороль к виртуальной машине: ansible_ssh_pass: 12345678
 - ssh пароль к NAT серверу: NAT_SSH_PASSWORD
 - пороль к БД Redmine REDMINE_DB_PASSWORD: password
+- api key для DataDog: DATADOG_API_KEY: 968cc14cf404634125185e4c41a8d762
 
 # Развертывание
 Для развертывания необходимо выполнить следующую команду
 ```
-ansible-playbook ./playbook.yaml -i ./inventory.yml --vault-password-file
+ansible-playbook ./playbook.yaml -i ./inventory.yml 
 ```
 
 После развертывания сайт будет доступен по ссылке: http://hexlet-p2.mexaho.online/
