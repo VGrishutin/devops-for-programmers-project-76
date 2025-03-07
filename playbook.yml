@@ -17,22 +17,10 @@
       become: true
     # - role: geerlingguy.docker
     #   become: true
-    - role: DataDog.datadog
-      vars:
-        app_port: "3000"
-        datadog_api_key: "{{DATADOG_API_KEY}}"
-        datadog_site: "{{DATADOG_SITE}}"
-        datadog_checks:
-          http_check:
-            init_config:
-            instances:
-              - name: Application health check status
-                url: "http://localhost:{{ app_port }}"
-                timeout: 5
-                method: GET      
-      become: true  
-      # when: 
-      #   - inventory_hostname in groups["webservers"]
+    # - role: DataDog.datadog
+    #   become: true  
+    #   when: 
+    #     - inventory_hostname in groups["webservers"]
 
   tasks:
     - name: Get running containers
@@ -72,15 +60,15 @@
         mode: '777'        
 
 
-    # - name: Ensure docker is in a running state
-    #   ansible.builtin.service:
-    #     name: docker 
-    #     state: started
-    #   register: dockerDetails
-    #   until: dockerDetails.status.ActiveState == "active"
-    #   retries: 15
-    #   delay: 20
-    #   become: true 
+    - name: Ensure docker is in a running state
+      ansible.builtin.service:
+        name: docker 
+        state: started
+      register: dockerDetails
+      until: dockerDetails.status.ActiveState == "active"
+      retries: 15
+      delay: 20
+      become: true 
 
     - name: Create a redmine container
       community.docker.docker_container:
