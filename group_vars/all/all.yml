@@ -3,7 +3,7 @@ ansible_user: ansible_user
 ansible_ssh_pass: 12345678
 ansible_ssh_common_args: '-o ProxyCommand="sshpass -p 12345678 ssh -W %h:%p -q -o StrictHostKeyChecking=no vlad@89.169.149.234"'
 
-REDMINE_DB_POSTGRES: rc1b-s6fp9fabafcj14ph.mdb.yandexcloud.net
+REDMINE_DB_POSTGRES: rc1a-ivql9uji7101d1v2.mdb.yandexcloud.net
 #REDMINE_DB_POSTGRES: postgres-db
 REDMINE_DB_PORT: "6432"
 REDMINE_DB_USERNAME: redmine-user
