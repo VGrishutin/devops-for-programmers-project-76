@@ -23,18 +23,18 @@
     #     - inventory_hostname in groups["webservers"]
 
   tasks:
-    - name: Get running containers
-      community.docker.docker_host_info:
-        containers: yes
-      register: docker_info
-      become: true
+    # - name: Get running containers
+    #   community.docker.docker_host_info:
+    #     containers: yes
+    #   register: docker_info
+    #   become: true
 
-    - name: Stop running containers
-      community.docker.docker_container:
-        name: "{{ item }}"
-        state: stopped
-      loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
-      become: true
+    # - name: Stop running containers
+    #   community.docker.docker_container:
+    #     name: "{{ item }}"
+    #     state: stopped
+    #   loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
+    #   become: true
 
     - name: Delete existing dist folder
       file:
