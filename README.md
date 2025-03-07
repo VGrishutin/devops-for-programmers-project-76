@@ -26,10 +26,15 @@ REDMINE_DB_DATABASE: redmine-db
 Уникальное случайное значение
 REDMINE_SECRET_KEY_BASE: "supersecretkey"
 
+### Часть переменных хранится в секретах
+- ssh пороль к виртуальной машине: ansible_ssh_pass: 12345678
+- ssh пароль к NAT серверу: NAT_SSH_PASSWORD
+- пороль к БД Redmine REDMINE_DB_PASSWORD: password
+
 # Развертывание
 Для развертывания необходимо выполнить следующую команду
 ```
-ansible-playbook ./playbook.yaml -i ./inventory.yml
+ansible-playbook ./playbook.yaml -i ./inventory.yml --vault-password-file
 ```
 
 После развертывания сайт будет доступен по ссылке: http://hexlet-p2.mexaho.online/

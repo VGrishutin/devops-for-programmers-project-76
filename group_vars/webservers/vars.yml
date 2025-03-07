@@ -1,0 +1,1 @@
+ansible_ssh_common_args: '-o ProxyCommand="sshpass -p {{NAT_SSH_PASSWORD}} ssh -W %h:%p -q -o StrictHostKeyChecking=no vlad@89.169.149.234"'
