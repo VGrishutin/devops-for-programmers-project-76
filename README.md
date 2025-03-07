@@ -7,11 +7,11 @@
 Перед развернтыванием необходимо установить 
 - Ansible
 - Дополнительные роли
-    geerlingguy.pip
-    geerlingguy.docker
-    DataDog.datadog
+    - geerlingguy.pip
+    - geerlingguy.docker
+    - DataDog.datadog
 - Дополнительные коллекции
-    community.docker
+    - community.docker
 
 ## Переменные окружения
 Для развертывания необходимо указать значения следующих переменныхЖ
@@ -20,14 +20,14 @@ ansible_user: ansible_user
 ansible_ssh_pass: 12345678
 
 Переменные отвечающие за подключение Redmine к серверу БД
-REDMINE_DB_POSTGRES: postgres-db
-REDMINE_DB_PORT: "5432"
-REDMINE_DB_USERNAME: redmine-user
-REDMINE_DB_PASSWORD: password
-REDMINE_DB_DATABASE: redmine-db
+- REDMINE_DB_POSTGRES: postgres-db
+- REDMINE_DB_PORT: "5432"
+- REDMINE_DB_USERNAME: redmine-user
+- REDMINE_DB_PASSWORD: password
+- REDMINE_DB_DATABASE: redmine-db
 
 Уникальное случайное значение
-REDMINE_SECRET_KEY_BASE: "supersecretkey"
+- REDMINE_SECRET_KEY_BASE: "supersecretkey"
 
 ### Часть переменных хранится в секретах
 - ssh пороль к виртуальной машине: ansible_ssh_pass: 12345678
@@ -38,7 +38,7 @@ REDMINE_SECRET_KEY_BASE: "supersecretkey"
 # Развертывание
 Для развертывания необходимо выполнить следующую команду
 ```
-ansible-playbook ./playbook.yaml -i ./inventory.yml 
+make deploy
 ```
 
 После развертывания сайт будет доступен по ссылке: http://hexlet-p2.mexaho.online/
